@@ -20,4 +20,5 @@ public class Routing {
     public String register(){
         return "daftar";
     }
+
 }
