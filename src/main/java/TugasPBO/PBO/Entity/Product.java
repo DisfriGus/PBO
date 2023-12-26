@@ -10,6 +10,9 @@ public class Product{
     @Id
     private String id;
     private String Title;
+    private String URL;
+
+
     private String deskripsiProduct;
     private int harga;
     private Category[] categories;
@@ -56,6 +59,14 @@ public class Product{
     public void setHarga(int harga) {
         this.harga = harga;
     }
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
 
     public Category[] getCategories() {
         return categories;

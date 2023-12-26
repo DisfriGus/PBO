@@ -11,8 +11,8 @@
 </head>
 
 <body class="overflow-y-auto overflow-x-hidden ">
-<div class='max-lg:overflow-hidden  z-20 w-screen  '>
-    <div class="fixed w-[100vw]">
+<div class='max-lg:overflow-hidden   w-screen  '>
+    <div class="fixed w-[100vw] z-20">
         <div class= 'flex items-center px-4 xl:px-[240px] py-4 justify-between bg-[#23886D] text-white'>
             <div class='flex items-center gap-2'>
                 <svg width="60" height="56" viewBox="0 0 60 56" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -46,12 +46,21 @@
         </div>
     </div>
 
-    <div class="">
+    <div class=" ">
         <img src="../../assets/imgHome.jpg" class="w-[100vw] h-[100vh]"  alt="">
-        <div class="bg-white absolute z-50 top-[35%] left-[35%] w-[600px] h-[340px]">
-
+        <div class="bg-white absolute top-[35%] left-[35%] w-[600px] h-[340px] px-[100px] flex flex-col items-center justify-center">
+            <h3 class="text-[20px] font-bold">Item Baru</h3>
+            <h1 class="text-[48px] font-[#23886D] text-center">Jelajahi Semua Produk</h1>
+            <a class="bg-[#23886D] px-4 py-5 text-white rounded-[16px]">Beli Sekarang</a>
         </div>
     </div>
+    <div class="flex justify-center mt-[140px] mb-[86px]">
+        <img src="../../assets/BestSeller.png" alt="">
+    </div>
+    <div id="bestSeller" class="flex gap-4 overflow-x-scroll max-w-[100vw]">
+        <!-- Content goes here -->
+    </div>
+
     <div id="myDiv" class="flex gap-5 justify-center">
 
     </div>
@@ -74,22 +83,32 @@
             }
         };
 
+
         // Function to update the content of the div with fetched data
         // Function to update the content of the div with fetched data
         const updateDivContent = async () => {
-            const apiUrl = 'http://localhost:8080/api/v1/category'; // Replace with your API endpoint
-            const fetchedData = await fetchData(apiUrl);
+            const productUrl = 'http://localhost:8080/api/v1/product'
+            const categoryUrl = 'http://localhost:8080/api/v1/category'; // Replace with your API endpoint
+            const fetchedDataCategory = await fetchData(categoryUrl);
+            const fetchedDataProduct = await fetchData(productUrl);
 
-            console.log('Fetched Data:', fetchedData); // Log the fetched data to the console
+            console.log('Fetched Data:', fetchedDataCategory)
+            console.log('Fetched Data:', fetchedDataProduct)
 
             // Get the reference to the div
             const myDiv = document.getElementById('myDiv');
-
+            const bestSeller = document.getElementById('bestSeller')
             // Create HTML content based on the fetched data
             let content = '';
+            let contentProduct= '';
+            if (Array.isArray(fetchedDataProduct) && fetchedDataProduct.length > 0){
+                fetchedDataProduct.forEach(product =>{
+                    contentProduct += '<button> <img class="min-w-[300px] h-[320px] object-fit scroll-ml-4 snap-start" src="'+(product.url)+'" alt="'+(product.namaProduct)+'"/>'+'<h2>'+(product.namaProduct)+'<h2></button>'
 
-            if (Array.isArray(fetchedData) && fetchedData.length > 0) {
-                fetchedData.forEach(category => {
+                })
+            }
+            if (Array.isArray(fetchedDataCategory) && fetchedDataCategory.length > 0) {
+                fetchedDataCategory.forEach(category => {
                     content += '<h2 >' + (category.namaKategori || 'No category found') + '</h2>';
                 });
             } else {
@@ -97,6 +116,7 @@
             }
 
             // Set the innerHTML of the div to the content
+            bestSeller.innerHTML = contentProduct;
             myDiv.innerHTML = content;
         };
 
