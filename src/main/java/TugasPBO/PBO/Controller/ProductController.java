@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/api/v1/product")
@@ -18,8 +20,13 @@ public class ProductController {
     @Autowired
     public ProductService productService;
 
+
     @GetMapping
-    public ResponseEntity<List<Product>> getAllCategory(){
+    public ResponseEntity<List<Product>> semuaProduk(){
+        List<Product> products = productService.allProduct();
+        for (Product product: products){
+            System.out.println(product.getNamaProduct());
+        }
         return  new ResponseEntity<List<Product>>(productService.allProduct(), HttpStatus.OK);
     }
 

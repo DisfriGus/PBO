@@ -1,7 +1,9 @@
 package TugasPBO.PBO.Entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "order")
 public class Order {
     @Id
     private String ID;
@@ -9,14 +11,24 @@ public class Order {
     private  String status;
     private  String tanggalPemesanan;
 
+    private String idCustomer;
     public Order() {
     }
 
-    public Order(String ID, TugasPBO.PBO.Entity.orderProduct[] orderProduct, String status, String tanggalPemesanan) {
+    public String getIdCustomer() {
+        return idCustomer;
+    }
+
+    public void setIdCustomer(String idCustomer) {
+        this.idCustomer = idCustomer;
+    }
+
+    public Order(String ID, orderProduct[] orderProduct, String status, String tanggalPemesanan, String idCustomer) {
         this.ID = ID;
         this.orderProduct = orderProduct;
         this.status = status;
         this.tanggalPemesanan = tanggalPemesanan;
+        this.idCustomer = idCustomer;
     }
 
     public String getID() {
@@ -27,11 +39,11 @@ public class Order {
         this.ID = ID;
     }
 
-    public TugasPBO.PBO.Entity.orderProduct[] getOrderProduct() {
+    public orderProduct[] getOrderProduct() {
         return orderProduct;
     }
 
-    public void setOrderProduct(TugasPBO.PBO.Entity.orderProduct[] orderProduct) {
+    public void setOrderProduct(orderProduct[] orderProduct) {
         this.orderProduct = orderProduct;
     }
 

@@ -6,67 +6,86 @@ import TugasPBO.PBO.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
-@RequestMapping
+@RequestMapping("/api/v1/customer")
 public class UserController {
     @Autowired
     private UserService userService;
-//    Menambahkan Data ke dalam Database
-    @PostMapping("/signup-success")
-    public String signup(
-            @RequestParam String username,
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String phone
-    ) {
-        Customer customer = new Customer();
-        customer.setUsername(username);
-        customer.setEmail(email);
-        customer.setPassword(password);
-        customer.setAlamat("");
-        customer.setNomorHP(phone);
-        System.out.println(customer.getUsername());
+
+    @PostMapping
+    public ResponseEntity<String> Register(@RequestBody Customer customer) {
         userService.saveUser(customer);
-
-        return "redirect:/login";
+        System.out.println("Berhasil Menambahkan User");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Added " + customer.getId());
     }
-    @GetMapping("/allUser")
-    public List<Customer> getAllUser(){
-        for (Customer customer : userService.allUser()) {
-            System.out.println(customer.getUsername());
-        }
-        return userService.allUser();
+    @GetMapping
+    public ResponseEntity<List<Customer>> allUser() {
+        List<Customer> customers = userService.userRepository.findAll();
+        return ResponseEntity.ok(customers);
     }
 
-    @RequestMapping(value = "/loginSuccess", method = RequestMethod.POST)
-    public String login(
-            @RequestParam String username,
-            @RequestParam String password,
-            HttpSession session
-    ){
-        Customer customer = userService.authenticationLogin(username, password);
-        if (customer != null){
-            // Menyimpan data customer ke sesi
-            session.setAttribute("loggedInCustomer", customer);
-            return "logged";
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Customer>> login(@PathVariable String id) {
+
+        Optional<Customer> customer = userService.singleCustomer(id);
+        if (customer.isPresent()) {
+            System.out.println("Berhasil Login");
+            return ResponseEntity.ok(customer);
         } else {
-            return "redirect:/login";
+            System.out.println("Gagal Login");
+            return ResponseEntity.notFound().build();
         }
     }
 
-    @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public String showProfile(HttpSession session, Model model) {
-        // Mengambil data customer dari sesi
-        Customer customer = (Customer) session.getAttribute("loggedInCustomer");
-        model.addAttribute("customer", customer);
-        System.out.println(customer.getUsername());
-        return "profile";
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable String id) {
+
+        userService.userRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Customer with id " + id + " has been deleted");
     }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Customer> EditProfile(@PathVariable String id, @RequestBody Customer updatedCustomer) {
+        Optional<Customer> existingCustomerOptional = userService.singleCustomer(id);
+
+        if (existingCustomerOptional.isPresent()) {
+            Customer existingCustomer = existingCustomerOptional.get();
+
+            // Update data pelanggan dengan data yang baru
+            if (updatedCustomer.getUsername() != null) {
+                existingCustomer.setUsername(updatedCustomer.getUsername());
+            }
+            if (updatedCustomer.getEmail() != null) {
+                existingCustomer.setEmail(updatedCustomer.getEmail());
+            }
+            if (updatedCustomer.getAlamat() != null) {
+                existingCustomer.setAlamat(updatedCustomer.getAlamat());
+            }
+            if (updatedCustomer.getNomorHP() != null) {
+                existingCustomer.setNomorHP(updatedCustomer.getNomorHP());
+            }
+
+            userService.saveUser(existingCustomer);
+            System.out.println("Berhasil Memperbaharui User");
+            return ResponseEntity.ok(existingCustomer);
+        } else {
+            // Pelanggan dengan ID yang diberikan tidak ditemukan
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
 }

@@ -12,7 +12,7 @@
 
 <body class="overflow-y-auto overflow-x-hidden ">
 <div class='max-lg:overflow-hidden   w-screen  '>
-    <div class="fixed w-[100vw] z-20">
+    <div class=" fixed w-[100vw] z-20">
         <div class= 'flex items-center px-4 xl:px-[240px] py-4 justify-between bg-[#23886D] text-white'>
             <div class='flex items-center gap-2'>
                 <svg width="60" height="56" viewBox="0 0 60 56" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -39,7 +39,7 @@
                             id='#search'
                             placeholder='Search'
                     />
-                    <button><a href="/details" class='text-[20px]'>Daftar</a></button>
+                    <button><a href="/daftar" class='text-[20px]'>Daftar</a></button>
                     <button><a href="/login" class='text-[20px]'>Login</a></button>
                 </div>
             </div>
@@ -57,13 +57,20 @@
     <div class="flex justify-center mt-[140px] mb-[86px]">
         <img src="../../assets/BestSeller.png" alt="">
     </div>
-    <div id="bestSeller" class="flex gap-4 overflow-x-scroll max-w-[100vw]">
+    <div id="bestSeller" class="flex items-start gap-4 overflow-x-scroll max-w-[100vw]">
         <!-- Content goes here -->
     </div>
+    <div class="mt-[120px] mb-10">
+        <h1 class="text-center text-[32px]">Kategori Belanja</h1>
+        <div id="myDiv" class="flex gap-5 mb-5 justify-center">
 
-    <div id="myDiv" class="flex gap-5 justify-center">
+        </div>
 
+        <div id="products" class="grid grid-cols-4 justify-items-center gap-4">
+
+        </div>
     </div>
+
 
 
 </div>
@@ -71,6 +78,10 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
+
+    function showProductName(button) {
+        location.href="/login"
+    }
     document.addEventListener('DOMContentLoaded', () => {
         // Function to fetch data from the API
         const fetchData = async (url) => {
@@ -98,15 +109,26 @@
             // Get the reference to the div
             const myDiv = document.getElementById('myDiv');
             const bestSeller = document.getElementById('bestSeller')
+            const idProducts = document.getElementById('products')
             // Create HTML content based on the fetched data
             let content = '';
             let contentProduct= '';
-            if (Array.isArray(fetchedDataProduct) && fetchedDataProduct.length > 0){
-                fetchedDataProduct.forEach(product =>{
-                    contentProduct += '<button> <img class="min-w-[300px] h-[320px] object-fit scroll-ml-4 snap-start" src="'+(product.url)+'" alt="'+(product.namaProduct)+'"/>'+'<h2>'+(product.namaProduct)+'<h2></button>'
+            let products=''
 
-                })
+            // Assume fetchedDataProduct is an array of product objects
+            if (Array.isArray(fetchedDataProduct) && fetchedDataProduct.length > 0) {
+                fetchedDataProduct.forEach(product => {
+                    contentProduct += '<button class="getProduct" class="flex flex-col min-w-[300px] max-w-[300px] flex flex-col justify-start" onclick="showProductName(this)"> <img class="min-w-[300px] max-w-[300px] h-[320px] object-fit" src="' + (product.url) + '" alt="' + (product.namaProduct) + '"/>' + '<h2 class="text-left font-semibold text-[28px]">' + (product.namaProduct) + '</h2> <p class="text-left text-[20px]">Rp '+(product.harga)+'</p> </button>';
+                    products += '<button class="getProduct" class="min-w-[300px] max-w-[300px] flex flex-col" onclick="showProductName(this)"> <img class="min-w-[300px] max-w-[300px] h-[320px] object-fit" src="' + (product.url) + '" alt="' + (product.namaProduct) + '"/>' + '<h2 class="text-left font-semibold text-[28px]">' + (product.namaProduct) + '</h2 > <p class="text-left text-[20px]"> Rp '+(product.harga)+'</p> </button>';
+                });
             }
+
+// Your existing JavaScript code...
+
+// Function to show product name when a button is clicked
+
+
+
             if (Array.isArray(fetchedDataCategory) && fetchedDataCategory.length > 0) {
                 fetchedDataCategory.forEach(category => {
                     content += '<h2 >' + (category.namaKategori || 'No category found') + '</h2>';
@@ -116,14 +138,18 @@
             }
 
             // Set the innerHTML of the div to the content
+            idProducts.innerHTML = products
             bestSeller.innerHTML = contentProduct;
             myDiv.innerHTML = content;
         };
 
 
 
+
         // Call the function to update div content with fetched data
         updateDivContent();
     });
+
+
 </script>
 </html>

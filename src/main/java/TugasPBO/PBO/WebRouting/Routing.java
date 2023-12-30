@@ -20,5 +20,22 @@ public class Routing {
     public String register(){
         return "daftar";
     }
+    @GetMapping("/loginSuccess")
+    public String logged(){
+        return "logged";
+    }
+
+    @GetMapping("/cart")
+    public String cart(){
+        return "cart";
+    }
+
+    @GetMapping("/riwayat")
+    public String riwayat(){
+        return "riwayat";
+    }
+
+
+
 
 }

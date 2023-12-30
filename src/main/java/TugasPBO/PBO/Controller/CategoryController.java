@@ -20,12 +20,12 @@ public class CategoryController {
     public CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategory(){
+    public ResponseEntity<List<Category>> menampilkanDaftarKategori(){
+        List<Category> categories = categoryService.allCategory();
+        for (Category category : categories) {
+            System.out.println(category.getNamaKategori());
+        }
         return  new ResponseEntity<List<Category>>(categoryService.allCategory(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public  ResponseEntity<Optional<Category>> getSingleTanaman(@PathVariable String id){
-        return  new ResponseEntity<Optional<Category>>(categoryService.singleCategory(id), HttpStatus.OK);
-    }
 }
